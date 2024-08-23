@@ -12,8 +12,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostMapping
     public ResponseEntity<User> addUser(@RequestBody User user){
@@ -37,10 +40,11 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity deleteUser(@RequestParam Long userId){
+    public ResponseEntity<Boolean> deleteUser(@RequestParam Long userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
-            return ResponseEntity.ok().body(userRepository.deleteById(userId));
+            userRepository.deleteById(userId);
+            return ResponseEntity.ok().body(Boolean.TRUE);
         }
         return ResponseEntity.noContent().build();
     }

@@ -48,4 +48,10 @@ public class UserController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        return userOptional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
 }
